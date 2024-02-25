@@ -92,53 +92,7 @@
         }
       }
     },
-    "/users/login": {
-      "post": {
-        "tags": ["Users"],
-        "summary": "User login",
-        "requestBody": {
-          "description": "User object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginUserRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginUserResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Email or password invalid / Email not verification / Email or password invalid",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Email or password invalid / Email not verification / Email or password invalid"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-
+  
   "components": {
     "schemas": {
       "RegistrationUserRequest": {
@@ -220,75 +174,6 @@
                 "type": "string",
                 "description": "avatar URL",
                 "example": "https://gdr.one/simg/250x250"
-              }
-            }
-          }
-        }
-      }
-    },
-
-    "LoginUserRequest": {
-      "type": "object",
-      "required": ["email", "password"],
-      "properties": {
-        "email": {
-          "type": "string",
-          "description": "User's email",
-          "format": "email"
-        },
-        "password": {
-          "type": "string",
-          "description": "User's password",
-          "example": "qwerty12345"
-        }
-      }
-    },
-
-    "LoginUserResponse": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "string",
-          "desctiption": "code",
-          "example": "201"
-        },
-        "status": {
-          "type": "string",
-          "desctiption": "code message",
-          "example": "success"
-        },
-        "data": {
-          "type": "object",
-          "required": ["User", "token"],
-          "properties": {
-            "User": {
-              "required": ["id", "name", "email", "avatarURL"],
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "description": "User's id",
-                  "example": "41286728914238293418w24qe9"
-                },
-                "name": {
-                  "type": "string",
-                  "description": "User's name",
-                  "example": "User"
-                },
-                "email": {
-                  "type": "string",
-                  "description": "User's email",
-                  "format": "email"
-                },
-                "avtarURL": {
-                  "type": "string",
-                  "description": "avtar URL",
-                  "example": "https://gdr.one/simg/250x250"
-                },
-                "token": {
-                  "type": "string",
-                  "description": "User's token",
-                  "example": "2194d847192801764981s7mn9"
-                }
               }
             }
           }
