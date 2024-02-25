@@ -13,7 +13,7 @@ const register = async (request, response) => {
   const user = await User.findOne({ email });
 
   if (user) {
-    throw HttpError(409, "Email in use");
+    throw HttpError(409, "Email already in use");
   }
 
   const hashPasswort = await bcrypt.hash(password, 10);
@@ -37,6 +37,7 @@ const register = async (request, response) => {
   
   response.status(201).json({
     user: {
+      name: newUser.name,
       email: newUser.email,
       subscription: newUser.subscription,
     },

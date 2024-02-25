@@ -1,0 +1,299 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "CONTACTS API READER",
+    "description": "Created project where users can create their contact lists",
+    "contact": {
+      "name": "Vitalii Blyskun",
+      "url": "https://github.com/VitaliiBlyskun"
+    }
+  },
+  "consumes": ["application/json", "multipare/form-data"],
+  "produces": ["application/json"],
+  "servers": [
+    { "url": "https://contacts-reader-api.onrender.com" },
+    { "url": "http://localhost:3000/api" }
+  ],
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Authorization endpoints"
+    },
+    {
+      "name": "Contacts",
+      "description": "Contacts endpoint"
+    },
+    {
+      "name": "Favorite",
+      "description": "Favorite"
+    }
+  ],
+
+  "paths": {
+    "/users/register": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "User registration",
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationUserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to save on database",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Unable to save on database"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Email already in use",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email already in use"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "User login",
+        "requestBody": {
+          "description": "User object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Email or password invalid / Email not verification / Email or password invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email or password invalid / Email not verification / Email or password invalid"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "schemas": {
+      "RegistrationUserRequest": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "User"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty12345"
+          }
+        }
+      },
+      "RegistrationUserResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "required": [
+              "_id",
+              "name",
+              "password",
+              "email",
+              "subscription",
+              "verify",
+              "verificationToken",
+              "avatarURL"
+            ],
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "User's _id",
+                "example": "65cbeb3e81d5ef1d14a19f6a"
+              },
+
+              "name": {
+                "type": "string",
+                "description": "User's name",
+                "example": "User"
+              },
+              "password": {
+                "type": "string",
+                "description": "User's password",
+                "example": "qwert12345"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              },
+              "subscription": {
+                "type": "string",
+                "description": "user subscription",
+                "enum": ["starter", "pro", "business"],
+                "example": "starter"
+              },
+              "verify": {
+                "type": "boolean",
+                "description": "user verify",
+                "enum": ["false", "true"],
+                "example": "starter"
+              },
+              "verificationToken": {
+                "type": "string",
+                "description": "verification user token",
+                "example": "f10828c6-d265-4897-8aef-5451dd6715c3"
+              },
+              "avatarURL": {
+                "type": "string",
+                "description": "avatar URL",
+                "example": "https://gdr.one/simg/250x250"
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "LoginUserRequest": {
+      "type": "object",
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "User's email",
+          "format": "email"
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password",
+          "example": "qwerty12345"
+        }
+      }
+    },
+
+    "LoginUserResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "desctiption": "code",
+          "example": "201"
+        },
+        "status": {
+          "type": "string",
+          "desctiption": "code message",
+          "example": "success"
+        },
+        "data": {
+          "type": "object",
+          "required": ["User", "token"],
+          "properties": {
+            "User": {
+              "required": ["id", "name", "email", "avatarURL"],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "User's id",
+                  "example": "41286728914238293418w24qe9"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "User's name",
+                  "example": "User"
+                },
+                "email": {
+                  "type": "string",
+                  "description": "User's email",
+                  "format": "email"
+                },
+                "avtarURL": {
+                  "type": "string",
+                  "description": "avtar URL",
+                  "example": "https://gdr.one/simg/250x250"
+                },
+                "token": {
+                  "type": "string",
+                  "description": "User's token",
+                  "example": "2194d847192801764981s7mn9"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
