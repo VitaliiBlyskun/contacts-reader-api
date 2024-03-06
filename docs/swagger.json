@@ -6,13 +6,11 @@
     "description": "Created project where users can create their contact lists",
     "contact": {
       "name": "Vitalii Blyskun",
-      "url": "https://github.com/VitaliiBlyskun"
+      "url": "https://github.com/VitaliiBlyskun/contacts-reader-api.git"
     }
   },
-  "consumes": ["application/json", "multipare/form-data"],
-  "produces": ["application/json"],
   "servers": [
-    { "url": "https://contacts-reader-api.onrender.com" },
+    { "url": "https://contacts-reader-api.onrender.com/api" },
     { "url": "http://localhost:3000/api" }
   ],
   "tags": [
@@ -23,10 +21,6 @@
     {
       "name": "Contacts",
       "description": "Contacts endpoint"
-    },
-    {
-      "name": "Favorite",
-      "description": "Favorite"
     }
   ],
 
@@ -119,7 +113,7 @@
             }
           },
           "401": {
-            "description": "Email or password invalid / Email not verification / Email or password invalid",
+            "description": "Email or password is wrong",
             "content": {
               "application/json": {
                 "schema": {
@@ -127,9 +121,788 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "Email or password invalid / Email not verification / Email or password invalid"
+                      "example": "Email or password is wrong"
                     }
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "User current",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "subscriptionUser",
+            "required": true,
+            "type": "string",
+            "description": "User verification token",
+            "example": "user_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/logout": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "User logout",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "subscriptionUser",
+            "required": true,
+            "type": "string",
+            "description": "User verification token",
+            "example": "user_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogoutUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/verify": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "User verify",
+        "requestBody": {
+          "description": "Auth object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Verification email sent"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{verificationToken}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "User verification",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "verificationToken",
+            "required": true,
+            "type": "string",
+            "description": "User verification token",
+            "example": "user_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Verification success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "User subscription",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "subscriptionUser",
+            "required": true,
+            "type": "string",
+            "description": "User verification token"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscriptionUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionUserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "\"subscription\" must be one of [starter, pro, business]"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/avatars": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "User update",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "subscriptionUser",
+            "required": true,
+            "type": "string",
+            "description": "User verification token",
+            "example": "user_token"
+          }
+        ],
+        "requestBody": {
+          "description": "Users's info object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "avatar": {
+                    "type": "string",
+                    "format": "binary",
+                    "contentType": ["image/png", "image/jpeg"],
+                    "description": "Avatar's image"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "avatarURL": "user_picture.png/jpeg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Missing fields! You need to provide at least one field to proceed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "cannot find the picture or unexpected field"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts": {
+      "get": {
+        "tags": ["Contacts"],
+        "summary": "Get list contacts",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "User Authorization token",
+            "example": "user_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactsListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Contacts"],
+        "summary": "Add contacts",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "User Authorization token",
+            "example": "user_token"
+          }
+        ],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddContactRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddContactResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "\"name\",\"email\", \"phone\" are required"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/{contactId}": {
+      "get": {
+        "tags": ["Contacts"],
+        "summary": "Get contacts by ID",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "User Authorization token",
+            "example": "user_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddContactResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "desctiption": "message",
+                      "example": ":contactId is not valid id"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Contacts"],
+        "summary": "Delete contact",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+            "description": "User Authorization token",
+            "example": "user_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "message",
+                      "example": "Contact deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Not Found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Contacts"],
+        "summary": "Put contact information",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+            "description": "User Authorization token",
+            "example": "user_token"
+          }
+        ],
+        "requestBody": {
+          "description": "add new contact request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PutContactRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddContactResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "desctiption": "message",
+                      "example": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "desctiption": "message",
+                      "example": "Not Found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/favorite": {
+      "get": {
+        "tags": ["Contacts"],
+        "summary": "Get favorite contacts",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "subscriptionUser",
+            "required": true,
+            "type": "string",
+            "description": "User Authorization token",
+            "example": "user_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoriteContactsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "desctiption": "message",
+                      "example": "Not Found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts/{contactId}/favorite": {
+      "patch": {
+        "tags": ["Contacts"],
+        "summary": "Update favorite contact",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "subscriptionUser",
+            "required": true,
+            "type": "string",
+            "description": "User Authorization token",
+            "example": "user_token"
+          }
+        ],
+        "requestBody": {
+          "description": "Registration's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchFavoriteContactRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatchFavoriteContactResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "desctiption": "message",
+                      "example": "Bad Request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotAuthorized"
                 }
               }
             }
@@ -161,38 +934,22 @@
             "description": "User's password",
             "example": "qwerty12345"
           }
+        },
+        "example": {
+          "name": "User",
+          "email": "user@example.com",
+          "password": "qwerty12345"
         }
       },
       "RegistrationUserResponse": {
         "type": "object",
         "properties": {
           "user": {
-            "required": [
-              "_id",
-              "name",
-              "password",
-              "email",
-              "subscription",
-              "verify",
-              "verificationToken",
-              "avatarURL"
-            ],
+            "required": ["name", "email", "subscription"],
             "properties": {
-              "_id": {
-                "type": "string",
-                "description": "User's _id",
-                "example": "65cbeb3e81d5ef1d14a19f6a"
-              },
-
               "name": {
                 "type": "string",
-                "description": "User's name",
-                "example": "User"
-              },
-              "password": {
-                "type": "string",
-                "description": "User's password",
-                "example": "qwert12345"
+                "description": "User's name"
               },
               "email": {
                 "type": "string",
@@ -202,96 +959,416 @@
               "subscription": {
                 "type": "string",
                 "description": "user subscription",
-                "enum": ["starter", "pro", "business"],
-                "example": "starter"
-              },
-              "verify": {
-                "type": "boolean",
-                "description": "user verify",
-                "enum": ["false", "true"],
-                "example": "starter"
-              },
-              "verificationToken": {
-                "type": "string",
-                "description": "verification user token",
-                "example": "f10828c6-d265-4897-8aef-5451dd6715c3"
-              },
-              "avatarURL": {
-                "type": "string",
-                "description": "avatar URL",
-                "example": "https://gdr.one/simg/250x250"
+                "enum": ["starter", "pro", "business"]
               }
             }
           }
+        },
+        "example": {
+          "user": {
+            "name": "User",
+            "email": "user@example.com",
+            "subscription": "starter"
+          }
         }
-      }
-    },
-
-    "LoginUserRequest": {
-      "type": "object",
-      "required": ["email", "password"],
-      "properties": {
-        "email": {
-          "type": "string",
-          "description": "User's email",
-          "format": "email"
-        },
-        "password": {
-          "type": "string",
-          "description": "User's password",
-          "example": "qwerty12345"
+      },
+      "LoginUserRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty12345"
+          }
         }
-      }
-    },
-
-    "LoginUserResponse": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "string",
-          "desctiption": "code",
-          "example": "201"
-        },
-        "status": {
-          "type": "string",
-          "desctiption": "code message",
-          "example": "success"
-        },
-        "data": {
-          "type": "object",
-          "required": ["User", "token"],
-          "properties": {
-            "User": {
-              "required": ["id", "name", "email", "avatarURL"],
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "description": "User's id",
-                  "example": "41286728914238293418w24qe9"
-                },
-                "name": {
-                  "type": "string",
-                  "description": "User's name",
-                  "example": "User"
-                },
-                "email": {
-                  "type": "string",
-                  "description": "User's email",
-                  "format": "email"
-                },
-                "avtarURL": {
-                  "type": "string",
-                  "description": "avtar URL",
-                  "example": "https://gdr.one/simg/250x250"
-                },
-                "token": {
-                  "type": "string",
-                  "description": "User's token",
-                  "example": "2194d847192801764981s7mn9"
-                }
+      },
+      "LoginUserResponse": {
+        "type": "object",
+        "required": ["token", "user"],
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "User's token",
+            "example": "2194d847192801764981s7mn9"
+          },
+          "user": {
+            "type": "object",
+            "required": ["email", "subscription"],
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              },
+              "subscription": {
+                "type": "string",
+                "description": "user subscription",
+                "enum": ["starter", "pro", "business"]
               }
             }
           }
+        },
+        "example": {
+          "token": "2194d847192801764981s7mn9",
+          "user": {
+            "email": "user@example.com",
+            "subscription": "starter"
+          }
+        }
+      },
+      "CurrentUserResponse": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password"
+          }
+        },
+        "example": {
+          "email": "user@example.com",
+          "password": "qwerty12345"
+        }
+      },
+      "LogoutUserResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "logout successful"
+          }
+        }
+      },
+      "VerifyRequest": {
+        "type": "object",
+        "required": ["email"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          }
+        }
+      },
+      "SubscriptionUserRequest": {
+        "type": "object",
+        "required": ["token", "email", "subscription"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "subscription": {
+            "type": "string",
+            "description": "User's subscription",
+            "enum": ["starter", "pro", "business"]
+          }
+        },
+        "example": {
+          "email": "user@example.com",
+          "subscription": "pro"
+        }
+      },
+      "SubscriptionUserResponse": {
+        "type": "object",
+        "required": ["email", "subscription"],
+        "properties": {
+          "user": {
+            "type": "object",
+            "required": ["email", "subscription"],
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              },
+              "subscription": {
+                "type": "string",
+                "description": "User's subscription",
+                "enum": ["starter", "pro", "business"]
+              }
+            }
+          }
+        },
+        "example": {
+          "email": "user@example.com",
+          "subscription": "pro"
+        }
+      },
+      "NotAuthorized": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Unauthorized"
+          }
+        }
+      },
+      "ContactsListResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Contact's name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact's email",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact's phone"
+          },
+          "favorite": {
+            "type": "boolean",
+            "description": "Contact's favorite",
+            "example": "false"
+          },
+          "owner": {
+            "type": "object",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "User's id"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              },
+              "subscription": {
+                "type": "string",
+                "description": "user subscription",
+                "enum": ["starter", "pro", "business"]
+              }
+            }
+          }
+        },
+        "example": [
+          {
+            "name": "Contact",
+            "email": "contact@gmail.com",
+            "phone": "+38-(050)-1234567",
+            "favorite": false,
+            "owner": {
+              "_id": "1234567890",
+              "email": "contact@gmail.com",
+              "subscription": "starter"
+            }
+          },
+          {
+            "name": "Contact2",
+            "email": "contact2@gmail.com",
+            "phone": "+38-(050)-1234568",
+            "favorite": false,
+            "owner": {
+              "_id": "1234567891",
+              "email": "contact2@gmail.com",
+              "subscription": "pro"
+            }
+          },
+          {
+            "name": "Contact3",
+            "email": "contact3@gmail.com",
+            "phone": "+38-(050)-1234569",
+            "favorite": false,
+            "owner": {
+              "_id": "1234567892",
+              "email": "contact3@gmail.com",
+              "subscription": "business"
+            }
+          }
+        ]
+      },
+      "AddContactRequest": {
+        "type": "object",
+        "required": ["name", "email", "phone"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Contact's name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact's email",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact's phone"
+          }
+        },
+        "example": {
+          "name": "Contact",
+          "email": "contact@gmail.com",
+          "phone": "+38(050)-1234567"
+        }
+      },
+      "AddContactResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Contact's id"
+          },
+          "name": {
+            "type": "string",
+            "description": "Contact's name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact's email",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact's phone"
+          },
+          "favorite": {
+            "type": "boolean",
+            "description": "Contact's favorite"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Contact's owner"
+          }
+        },
+        "example": {
+          "_id": "1234567890",
+          "name": "Contact",
+          "email": "contact@gmail.com",
+          "phone": "+38(050)-1234567",
+          "favorite": false,
+          "owner": "0987654321"
+        }
+      },
+      "FavoriteContactsResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Contact's name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact's email",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact's phone"
+          },
+          "favorite": {
+            "type": "boolean",
+            "description": "Contact's favorite"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Contact's owner"
+          }
+        },
+        "example": [
+          {
+            "name": "Contact",
+            "email": "contact@gmail.com",
+            "phone": "+38(050)-1234567",
+            "favorite": true,
+            "owner": "0987654321"
+          }
+        ]
+      },
+      "PutContactRequest": {
+        "type": "object",
+        "required": ["name", "email", "phone"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Contact's name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact's email",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact's phone"
+          },
+          "favorite": {
+            "type": "boolean",
+            "description": "Contact's status"
+          }
+        },
+        "example": {
+          "name": "Contact",
+          "email": "contact@gmail.com",
+          "phone": "+38(050)-1234567",
+          "favorite": false
+        }
+      },
+      "PatchFavoriteContactRequest": {
+        "type": "object",
+        "required": ["favorite"],
+        "properties": {
+          "favorite": {
+            "type": "boolean",
+            "description": "Favorite contact status"
+          }
+        },
+        "example": {
+          "favorite": true
+        }
+      },
+      "PatchFavoriteContactResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Contact's id"
+          },
+          "name": {
+            "type": "string",
+            "description": "Contact's name"
+          },
+          "email": {
+            "type": "string",
+            "description": "Contact's email",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Contact's phone"
+          },
+          "favorite": {
+            "type": "boolean",
+            "description": "Contact's favorite"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Contact's owner"
+          }
+        },
+        "example": {
+          "_id": "1234567890",
+          "name": "Contact",
+          "email": "contact@gmail.com",
+          "phone": "+38(050)-1234567",
+          "favorite": true,
+          "owner": "0987654321"
         }
       }
     }
