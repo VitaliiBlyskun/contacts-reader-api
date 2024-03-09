@@ -6,8 +6,8 @@ const current = require('./current');
 const logout = require('./logout');
 const subscriptionUser = require('./subscriptionUser');
 const updateAvatar = require('./updateAvatar')
-const verificationUser = require('./verificationUser');
-const resendVerifyEmail = require('./resendVerifyEmail');
+const verificationUser = require('../../services/email/verificationUser');
+const resendVerifyEmail = require('../../services/email/resendVerifyEmail');
 
 module.exports = {
     register: controllerWrapper(register),
