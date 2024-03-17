@@ -28,11 +28,15 @@ const register = async (request, response) => {
     verificationToken,
   });
 
+  const targetLink = `<a target='_blank' href="${BASE_URL}/api/users/verify/${verificationToken}">Click on this link</a>`
+
   const verifyEmail = {
     to: email,
     subject: "Verify email",
-    text: "and easy to do anywhere, even with Node.js",
-    html: "<a target='_blank' href=`${BASE_URL}/api/users/verify/${verificationToken}`>Click on this link</a>",
+    text: "Follow the link and verify the user",
+    // html: "<a target='_blank' href=`${BASE_URL}/api/users/verify/${verificationToken}`>Click on this link</a>",
+    // html: '<a target="_blank" href="http:localhost:3000/api/users/verify">Click on this link</a>',
+    html: targetLink,
   };
 
   await emailService.sendEmail(verifyEmail);

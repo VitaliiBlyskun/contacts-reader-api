@@ -13,10 +13,13 @@ const resendVerifyEmail = async (request, response) => {
   if (user.verify) {
     throw HttpError(404, "Verification has already been passed");
   }
+
+  const targetLink = `<a target='_blank' href="${BASE_URL}/api/users/verify/${user.verificationToken}">Click on this link</a>`
+
   const verifyEmail = {
     to: email,
     subject: "Verify email",
-    html: `<a target="_blanc" href="${BASE_URL}/api/users/verify/${user.verificationToken}"> Click verify email</a>`,
+    html: targetLink,
   };
 
   await sendEmail(verifyEmail);

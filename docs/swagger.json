@@ -112,8 +112,24 @@
               }
             }
           },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid request format"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Email or password is wrong",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -128,22 +144,28 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
       }
     },
     "/users/current": {
       "get": {
         "tags": ["Users"],
         "summary": "User current",
-        "security": [{ "Bearer": [] }],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
-            "in": "path",
-            "name": "subscriptionUser",
+            "name": "Authorization",
+            "in": "header",
             "required": true,
-            "type": "string",
-            "description": "User verification token",
-            "example": "user_token"
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
           }
         ],
         "responses": {
@@ -174,15 +196,16 @@
       "post": {
         "tags": ["Users"],
         "summary": "User logout",
-        "security": [{ "Bearer": [] }],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
-            "in": "path",
-            "name": "subscriptionUser",
+            "name": "Authorization",
+            "in": "header",
             "required": true,
-            "type": "string",
-            "description": "User verification token",
-            "example": "user_token"
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
           }
         ],
         "responses": {
@@ -264,17 +287,6 @@
       "get": {
         "tags": ["Users"],
         "summary": "User verification",
-        "security": [{ "Bearer": [] }],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "verificationToken",
-            "required": true,
-            "type": "string",
-            "description": "User verification token",
-            "example": "user_token"
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -307,7 +319,12 @@
                 }
               }
             }
-          }
+          },
+          "security": [
+            {
+              "BearerAuth": []
+            }
+          ]
         }
       }
     },
@@ -315,14 +332,16 @@
       "patch": {
         "tags": ["Users"],
         "summary": "User subscription",
-        "security": [{ "Bearer": [] }],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
-            "in": "path",
-            "name": "subscriptionUser",
+            "name": "Authorization",
+            "in": "header",
             "required": true,
-            "type": "string",
-            "description": "User verification token"
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
           }
         ],
         "requestBody": {
@@ -395,15 +414,16 @@
       "patch": {
         "tags": ["Users"],
         "summary": "User update",
-        "security": [{ "Bearer": [] }],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
-            "in": "path",
-            "name": "subscriptionUser",
+            "name": "Authorization",
+            "in": "header",
             "required": true,
-            "type": "string",
-            "description": "User verification token",
-            "example": "user_token"
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
           }
         ],
         "requestBody": {
@@ -491,15 +511,16 @@
       "get": {
         "tags": ["Contacts"],
         "summary": "Get list contacts",
-        "security": [{ "Bearer": [] }],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
-            "in": "path",
             "name": "Authorization",
+            "in": "header",
             "required": true,
-            "type": "string",
-            "description": "User Authorization token",
-            "example": "user_token"
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
           }
         ],
         "responses": {
@@ -528,14 +549,16 @@
       "post": {
         "tags": ["Contacts"],
         "summary": "Add contacts",
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
-            "in": "path",
             "name": "Authorization",
+            "in": "header",
             "required": true,
-            "type": "string",
-            "description": "User Authorization token",
-            "example": "user_token"
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
           }
         ],
         "requestBody": {
@@ -593,15 +616,16 @@
       "get": {
         "tags": ["Contacts"],
         "summary": "Get contacts by ID",
-        "security": [{ "Bearer": [] }],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
-            "in": "path",
             "name": "Authorization",
+            "in": "header",
             "required": true,
-            "type": "string",
-            "description": "User Authorization token",
-            "example": "user_token"
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
           }
         ],
         "responses": {
@@ -647,15 +671,16 @@
       "delete": {
         "tags": ["Contacts"],
         "summary": "Delete contact",
-        "security": [{ "Bearer": [] }],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
-            "in": "path",
-            "name": "id",
+            "name": "Authorization",
+            "in": "header",
             "required": true,
-            "type": "string",
-            "description": "User Authorization token",
-            "example": "user_token"
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
           }
         ],
         "responses": {
@@ -707,15 +732,16 @@
       "put": {
         "tags": ["Contacts"],
         "summary": "Put contact information",
-        "security": [{ "Bearer": [] }],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
-            "in": "path",
-            "name": "id",
+            "name": "Authorization",
+            "in": "header",
             "required": true,
-            "type": "string",
-            "description": "User Authorization token",
-            "example": "user_token"
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
           }
         ],
         "requestBody": {
@@ -791,15 +817,16 @@
       "get": {
         "tags": ["Contacts"],
         "summary": "Get favorite contacts",
-        "security": [{ "Bearer": [] }],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
-            "in": "path",
-            "name": "subscriptionUser",
+            "name": "Authorization",
+            "in": "header",
             "required": true,
-            "type": "string",
-            "description": "User Authorization token",
-            "example": "user_token"
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
           }
         ],
         "responses": {
@@ -847,15 +874,16 @@
       "patch": {
         "tags": ["Contacts"],
         "summary": "Update favorite contact",
-        "security": [{ "Bearer": [] }],
+        "security": [{ "BearerAuth": [] }],
         "parameters": [
           {
-            "in": "path",
-            "name": "subscriptionUser",
+            "name": "Authorization",
+            "in": "header",
             "required": true,
-            "type": "string",
-            "description": "User Authorization token",
-            "example": "user_token"
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
           }
         ],
         "requestBody": {
@@ -889,7 +917,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "desctiption": "message",
+                      "description": "message",
                       "example": "Bad Request"
                     }
                   }
@@ -913,6 +941,15 @@
   },
 
   "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Enter 'Bearer' [space] and then user_token",
+        "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+      }
+    },
     "schemas": {
       "RegistrationUserRequest": {
         "type": "object",
@@ -987,6 +1024,10 @@
             "description": "User's password",
             "example": "qwerty12345"
           }
+        },
+        "example": {
+          "email": "user@example.com",
+          "password": "qwerty12345"
         }
       },
       "LoginUserResponse": {
@@ -996,7 +1037,7 @@
           "token": {
             "type": "string",
             "description": "User's token",
-            "example": "2194d847192801764981s7mn9"
+            "example": "user_token"
           },
           "user": {
             "type": "object",
@@ -1016,7 +1057,7 @@
           }
         },
         "example": {
-          "token": "2194d847192801764981s7mn9",
+          "token": "user_token",
           "user": {
             "email": "user@example.com",
             "subscription": "starter"
